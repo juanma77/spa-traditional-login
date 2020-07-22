@@ -17,7 +17,7 @@ export class RegistroComponent implements OnInit {
 
     this.user = new UserModel(); 
 
-    this.user.email = 'juan@gmail.com'
+    //this.user.email = 'juan@gmail.com'
 
   }
 
