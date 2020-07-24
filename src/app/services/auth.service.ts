@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { UserModel } from '../models/user.model';
 
+import { map } from 'rxjs/operators';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -10,6 +12,8 @@ export class AuthService {
   public url = 'https://identitytoolkit.googleapis.com/v1/accounts';
   
   public apiKey = 'AIzaSyDqUqI0PFVqDT_Y77KBLzAf_0l_vxBa5SM'; 
+
+  public userToken: string; 
 
 
   // Crear nuevo usuario
@@ -22,7 +26,7 @@ export class AuthService {
 
   constructor( private http: HttpClient ) {
 
-
+    this.readUserToken(); 
 
   }
 
@@ -43,7 +47,20 @@ export class AuthService {
     };
 
     // Mandamos el url y la informacion que queremos postear 
-    return this.http.post(`${ this.url }:signInWithPassword?key=${ this.apiKey }`, authData);
+    return this.http.post(`${ this.url }:signInWithPassword?key=${ this.apiKey }`, authData).pipe(
+
+      map( (resp) =>{
+
+        console.log('Entramos al map de rxjs');
+        this.saveUserToken( resp['idToken'] );
+        return resp;
+
+      })
+
+    ); 
+
+
+  
 
 
   }
@@ -67,9 +84,44 @@ export class AuthService {
 
     };
 
-    // Mandamos el url y la informacion que queremos postear 
-    return this.http.post(`${ this.url }:signUp?key=${ this.apiKey }`, authData); 
+    // Mandamos el url y la informacion que queremos postear; el pipe es para agregar mas operadores luego de él mismo, mientras que el map es para que a cada elemento de la respuesta en este caso, se le agregue un filtro que solo obtenga el "idToken"
+    return this.http.post(`${ this.url }:signUp?key=${ this.apiKey }`, authData).pipe(
 
+      map( (resp) =>{
+
+        console.log('Entramos al map de rxjs');
+        this.saveUserToken( resp['idToken'] );
+        return resp;
+
+      })
+
+    ); 
+
+
+  }
+
+  private saveUserToken( idToken: string ) {
+
+
+    this.userToken = idToken;
+    localStorage.setItem('Token', idToken);
+
+
+  }
+
+  public readUserToken(  ) {
+
+    if( localStorage.getItem('Token') ) {
+
+      this.userToken = localStorage.getItem('Token');
+
+    } else {
+
+      this.userToken= '';
+
+    }
+
+    return this.userToken; 
 
   }
 
