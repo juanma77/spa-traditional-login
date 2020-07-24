@@ -125,4 +125,21 @@ export class AuthService {
 
   }
 
+  public isUserAuthenticated(): boolean {
+
+   return this.userToken.length > 2; 
+
+   /*if( this.userToken ) {
+
+    return true;
+
+
+   } else {
+
+    return false; 
+
+   }*/
+
+  }
+
 }
