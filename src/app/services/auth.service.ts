@@ -32,7 +32,7 @@ export class AuthService {
 
   public logOut() {
 
-
+    localStorage.removeItem('token');
 
   }
 
@@ -58,9 +58,6 @@ export class AuthService {
       })
 
     ); 
-
-
-  
 
 
   }
@@ -104,16 +101,16 @@ export class AuthService {
 
 
     this.userToken = idToken;
-    localStorage.setItem('Token', idToken);
+    localStorage.setItem('token', idToken);
 
 
   }
 
   public readUserToken(  ) {
 
-    if( localStorage.getItem('Token') ) {
+    if( localStorage.getItem('token') ) {
 
-      this.userToken = localStorage.getItem('Token');
+      this.userToken = localStorage.getItem('token');
 
     } else {
 
