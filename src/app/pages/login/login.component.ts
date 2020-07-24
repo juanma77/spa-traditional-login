@@ -3,6 +3,9 @@ import { UserModel } from '../../models/user.model';
 import { NgForm } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 
+import Swal from 'sweetalert2';
+import { Router } from '@angular/router';
+
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -12,7 +15,7 @@ export class LoginComponent implements OnInit {
 
   public user: UserModel;
 
-  constructor( private authService: AuthService ) { }
+  constructor( private authService: AuthService, private router: Router ) { }
 
   ngOnInit() {
 
@@ -28,6 +31,15 @@ export class LoginComponent implements OnInit {
 
     }
 
+    Swal.fire({
+
+      allowOutsideClick: false,
+      text: 'Espere por favor...',
+
+    });
+
+    Swal.showLoading(); 
+
     console.log(' Form enviado ');
     console.log( this.user );
     console.log( form ); 
@@ -36,11 +48,23 @@ export class LoginComponent implements OnInit {
 
       
       console.log( resp );
+      Swal.close();
+
+      this.router.navigateByUrl('/home');
 
 
     }, (err) => {
 
       console.log( err.error.error.message );
+
+      Swal.fire({
+
+        icon: 'error',
+        allowOutsideClick: false,
+        title: 'Ha ocurrido un error',
+        text: err.error.error.message
+  
+      });
 
     });
 
